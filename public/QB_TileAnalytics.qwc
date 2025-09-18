@@ -2,9 +2,9 @@
 <QBWCXML>
    <AppName>QB Tile Analytics</AppName>
    <AppID>{E4C1A2B3-9876-4321-A123-456789ABCDEF}</AppID>
-   <AppURL>https://ydeyxmrradqlqedqhkmx.supabase.co/functions/v1/quickbooks-connector</AppURL>
+   <AppURL>http://localhost:3000/api/quickbooks-connector</AppURL>
    <AppDescription>QuickBooks Web Connector for South African Tile Business Analytics</AppDescription>
-   <AppSupport>https://ydeyxmrradqlqedqhkmx.supabase.co/functions/v1/quickbooks-support</AppSupport>
+   <AppSupport>http://localhost:3000/support</AppSupport>
    <UserName>qb_tile_user</UserName>
    <OwnerID>{12345678-1234-1234-1234-123456789ABC}</OwnerID>
    <FileID>{QBFILE-TILE-2024-ANALYTICS}</FileID>
