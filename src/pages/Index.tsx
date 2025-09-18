@@ -1,7 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, TrendingUp, DollarSign, Package, Server, Settings, Users, Wrench, AlertTriangle } from "lucide-react";
+import { BarChart3, TrendingUp, DollarSign, Package, Server, Settings, Users, Wrench, AlertTriangle, Download } from "lucide-react";
+import { SalesChart } from "@/components/charts/SalesChart";
+import { InventoryChart } from "@/components/charts/InventoryChart";
+import { CustomerChart } from "@/components/charts/CustomerChart";
 
 const Index = () => {
   return (
@@ -63,10 +66,21 @@ const Index = () => {
                   <p className="text-sm text-muted-foreground">192.168.3.100 • Western Cape</p>
                 </div>
               </div>
-              <Button className="mt-4">
-                <Server className="h-4 w-4 mr-2" />
-                Add Server
-              </Button>
+              <div className="flex gap-2 mt-4">
+                <Button>
+                  <Server className="h-4 w-4 mr-2" />
+                  Add Server
+                </Button>
+                <Button variant="outline" onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/QB_TileAnalytics.qwc';
+                  link.download = 'QB_TileAnalytics.qwc';
+                  link.click();
+                }}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download QWC
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -179,13 +193,7 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px] flex items-center justify-center bg-muted rounded-lg">
-                <div className="text-center">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Sales comparison chart</p>
-                  <p className="text-sm text-muted-foreground">Johannesburg vs Cape Town</p>
-                </div>
-              </div>
+              <SalesChart />
             </CardContent>
           </Card>
           
@@ -243,20 +251,7 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">In Stock</span>
-                  <span className="font-medium text-green-600">89%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Low Stock</span>
-                  <span className="font-medium text-orange-600">8%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Dead Stock</span>
-                  <span className="font-medium text-red-600">3%</span>
-                </div>
-              </div>
+              <InventoryChart />
             </CardContent>
           </Card>
           
@@ -293,20 +288,7 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Referrals</span>
-                  <span className="font-medium">45%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Online</span>
-                  <span className="font-medium">32%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Walk-ins</span>
-                  <span className="font-medium">23%</span>
-                </div>
-              </div>
+              <CustomerChart />
             </CardContent>
           </Card>
         </div>
