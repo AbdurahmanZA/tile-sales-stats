@@ -14,7 +14,227 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      branches: {
+        Row: {
+          created_at: string
+          id: string
+          ip_address: string
+          last_sync: string | null
+          location: string | null
+          name: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_address: string
+          last_sync?: string | null
+          location?: string | null
+          name: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_address?: string
+          last_sync?: string | null
+          location?: string | null
+          name?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customer_data: {
+        Row: {
+          branch_id: string | null
+          contact_info: string | null
+          created_at: string
+          customer_name: string
+          first_purchase_date: string | null
+          id: string
+          last_purchase_date: string | null
+          lead_source: string | null
+          retention_status: string | null
+          total_purchases: number | null
+        }
+        Insert: {
+          branch_id?: string | null
+          contact_info?: string | null
+          created_at?: string
+          customer_name: string
+          first_purchase_date?: string | null
+          id?: string
+          last_purchase_date?: string | null
+          lead_source?: string | null
+          retention_status?: string | null
+          total_purchases?: number | null
+        }
+        Update: {
+          branch_id?: string | null
+          contact_info?: string | null
+          created_at?: string
+          customer_name?: string
+          first_purchase_date?: string | null
+          id?: string
+          last_purchase_date?: string | null
+          lead_source?: string | null
+          retention_status?: string | null
+          total_purchases?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_data_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_data: {
+        Row: {
+          branch_id: string | null
+          cost_per_unit: number | null
+          created_at: string
+          current_stock: number | null
+          id: string
+          last_turnover_date: string | null
+          reorder_level: number | null
+          status: string | null
+          supplier: string | null
+          tile_style: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          cost_per_unit?: number | null
+          created_at?: string
+          current_stock?: number | null
+          id?: string
+          last_turnover_date?: string | null
+          reorder_level?: number | null
+          status?: string | null
+          supplier?: string | null
+          tile_style: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          cost_per_unit?: number | null
+          created_at?: string
+          current_stock?: number | null
+          id?: string
+          last_turnover_date?: string | null
+          reorder_level?: number | null
+          status?: string | null
+          supplier?: string | null
+          tile_style?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_data_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operations_data: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          date: string
+          efficiency_percentage: number | null
+          id: string
+          installations_completed: number | null
+          labor_cost: number | null
+          scheduled_installations: number | null
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          date: string
+          efficiency_percentage?: number | null
+          id?: string
+          installations_completed?: number | null
+          labor_cost?: number | null
+          scheduled_installations?: number | null
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          date?: string
+          efficiency_percentage?: number | null
+          id?: string
+          installations_completed?: number | null
+          labor_cost?: number | null
+          scheduled_installations?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operations_data_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_data: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          currency: string | null
+          customer_name: string | null
+          id: string
+          margin_percentage: number | null
+          quantity_sold: number | null
+          tile_style: string | null
+          total_amount: number | null
+          transaction_date: string
+          unit_price: number | null
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          currency?: string | null
+          customer_name?: string | null
+          id?: string
+          margin_percentage?: number | null
+          quantity_sold?: number | null
+          tile_style?: string | null
+          total_amount?: number | null
+          transaction_date: string
+          unit_price?: number | null
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          currency?: string | null
+          customer_name?: string | null
+          id?: string
+          margin_percentage?: number | null
+          quantity_sold?: number | null
+          tile_style?: string | null
+          total_amount?: number | null
+          transaction_date?: string
+          unit_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_data_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
