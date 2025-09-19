@@ -10,6 +10,13 @@ import {
   parseQBDate,
   generateRequestID
 } from '../utils/qbxml.js';
+import { 
+  parseSOAPRequest, 
+  buildSOAPResponse, 
+  buildSOAPFault, 
+  extractSOAPValue,
+  getSOAPAction 
+} from '../utils/soap.js';
 import { supabase } from '../config/supabase.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,45 +34,52 @@ const activeRequests = new Map();
  */
 export async function handleSOAPRequest(req, res) {
   try {
-    const soapAction = req.headers.soapaction || req.headers['soapaction'];
-    const requestBody = req.body;
+    const xmlString = req.body;
+    const soapAction = getSOAPAction(req.headers, xmlString);
     
     console.log(`🔄 SOAP Action: ${soapAction}`);
-    console.log(`📥 Request Body:`, JSON.stringify(requestBody, null, 2));
+    console.log(`📥 Request Body (first 500 chars):`, xmlString.substring(0, 500));
+    
+    // Parse SOAP request
+    const { action, data } = parseSOAPRequest(xmlString);
+    console.log(`🎯 Parsed Action: ${action}`);
     
     let response;
     
-    switch (soapAction) {
+    // Use the parsed action if available, fallback to header
+    const actionName = action || soapAction;
+    
+    switch (actionName) {
       case 'serverVersion':
         response = await handleServerVersion();
         break;
         
       case 'clientVersion':
-        response = await handleClientVersion(requestBody);
+        response = await handleClientVersion(data);
         break;
         
       case 'authenticate':
-        response = await handleAuthenticate(requestBody);
+        response = await handleAuthenticate(data);
         break;
         
       case 'sendRequestXML':
-        response = await handleSendRequestXML(requestBody);
+        response = await handleSendRequestXML(data);
         break;
         
       case 'receiveResponseXML':
-        response = await handleReceiveResponseXML(requestBody);
+        response = await handleReceiveResponseXML(data);
         break;
         
       case 'connectionError':
-        response = await handleConnectionError(requestBody);
+        response = await handleConnectionError(data);
         break;
         
       case 'closeConnection':
-        response = await handleCloseConnection(requestBody);
+        response = await handleCloseConnection(data);
         break;
         
       default:
-        response = await handleUnknownAction(soapAction);
+        response = await handleUnknownAction(actionName);
     }
     
     console.log(`📤 SOAP Response:`, JSON.stringify(response, null, 2));
@@ -96,8 +110,8 @@ async function handleServerVersion() {
 /**
  * Handle clientVersion request
  */
-async function handleClientVersion(requestBody) {
-  const clientVersion = requestBody.clientVersion || '0.0.0.0';
+async function handleClientVersion(soapData) {
+  const clientVersion = extractSOAPValue(soapData, 'clientVersion') || '0.0.0.0';
   
   console.log(`📋 Client Version: ${clientVersion}`);
   
@@ -119,8 +133,9 @@ async function handleClientVersion(requestBody) {
 /**
  * Handle authenticate request
  */
-async function handleAuthenticate(requestBody) {
-  const { strUserName, strPassword } = requestBody;
+async function handleAuthenticate(soapData) {
+  const strUserName = extractSOAPValue(soapData, 'strUserName');
+  const strPassword = extractSOAPValue(soapData, 'strPassword');
   
   console.log(`🔐 Authentication attempt: ${strUserName}`);
   
@@ -131,10 +146,7 @@ async function handleAuthenticate(requestBody) {
   if (strUserName !== expectedUsername || strPassword !== expectedPassword) {
     console.log('❌ Authentication failed: Invalid credentials');
     return buildSOAPResponse('authenticate', {
-      authenticateResult: {
-        '#text': 'nvu', // Invalid user
-        '@_xmlns': ''
-      }
+      authenticateResult: 'nvu' // Invalid user
     });
   }
   
@@ -159,18 +171,17 @@ async function handleAuthenticate(requestBody) {
   });
   
   return buildSOAPResponse('authenticate', {
-    authenticateResult: {
-      '#text': sessionTicket,
-      '@_xmlns': ''
-    }
+    authenticateResult: sessionTicket
   });
 }
 
 /**
  * Handle sendRequestXML request
  */
-async function handleSendRequestXML(requestBody) {
-  const { ticket, hcpResponse, companyFileName } = requestBody;
+async function handleSendRequestXML(soapData) {
+  const ticket = extractSOAPValue(soapData, 'ticket');
+  const hcpResponse = extractSOAPValue(soapData, 'hcpResponse');
+  const companyFileName = extractSOAPValue(soapData, 'companyFileName');
   
   console.log(`📨 SendRequestXML - Ticket: ${ticket}, Company: ${companyFileName}`);
   
@@ -228,8 +239,11 @@ async function handleSendRequestXML(requestBody) {
 /**
  * Handle receiveResponseXML request
  */
-async function handleReceiveResponseXML(requestBody) {
-  const { ticket, response, hresult, message } = requestBody;
+async function handleReceiveResponseXML(soapData) {
+  const ticket = extractSOAPValue(soapData, 'ticket');
+  const response = extractSOAPValue(soapData, 'response');
+  const hresult = extractSOAPValue(soapData, 'hresult');
+  const message = extractSOAPValue(soapData, 'message');
   
   console.log(`📨 ReceiveResponseXML - Ticket: ${ticket}`);
   console.log(`📄 Response length: ${response ? response.length : 0} characters`);
@@ -285,8 +299,10 @@ async function handleReceiveResponseXML(requestBody) {
 /**
  * Handle connectionError request
  */
-async function handleConnectionError(requestBody) {
-  const { ticket, hresult, message } = requestBody;
+async function handleConnectionError(soapData) {
+  const ticket = extractSOAPValue(soapData, 'ticket');
+  const hresult = extractSOAPValue(soapData, 'hresult');
+  const message = extractSOAPValue(soapData, 'message');
   
   console.log(`❌ Connection Error - Ticket: ${ticket}, HRESULT: ${hresult}, Message: ${message}`);
   
@@ -303,8 +319,8 @@ async function handleConnectionError(requestBody) {
 /**
  * Handle closeConnection request
  */
-async function handleCloseConnection(requestBody) {
-  const { ticket } = requestBody;
+async function handleCloseConnection(soapData) {
+  const ticket = extractSOAPValue(soapData, 'ticket');
   
   console.log(`🔒 Closing connection - Ticket: ${ticket}`);
   
@@ -473,30 +489,7 @@ async function processSales(ticket, salesData, type = 'receipt') {
  * Helper functions
  */
 
-function buildSOAPResponse(action, body) {
-  const soapEnvelope = `<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <${action}Response xmlns="http://developer.intuit.com/">
-      ${typeof body === 'string' ? body : JSON.stringify(body)}
-    </${action}Response>
-  </soap:Body>
-</soap:Envelope>`;
-  
-  return soapEnvelope;
-}
-
-function buildSOAPFault(faultCode, faultString) {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <soap:Fault>
-      <faultcode>${faultCode}</faultcode>
-      <faultstring>${faultString}</faultstring>
-    </soap:Fault>
-  </soap:Body>
-</soap:Envelope>`;
-}
+// SOAP response builders moved to utils/soap.js
 
 function compareVersions(version1, version2) {
   const parts1 = version1.split('.').map(Number);
