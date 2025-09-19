@@ -14,20 +14,32 @@ if %errorLevel% neq 0 (
 echo Checking for Git installation...
 git --version >nul 2>&1
 if %errorLevel% neq 0 (
-    echo Git is not installed. Please install Git for Windows first.
-    echo Download from: https://git-scm.com/download/win
+    echo ERROR: Git is not installed!
+    echo.
+    echo Please install Git for Windows first:
+    echo https://git-scm.com/download/win
+    echo.
+    echo After installing Git, run this script again.
+    echo.
     pause
     exit /b 1
 )
+echo Git found!
 
 echo Checking for Node.js installation...
 node --version >nul 2>&1
 if %errorLevel% neq 0 (
-    echo Node.js is not installed. Please install Node.js LTS first.
-    echo Download from: https://nodejs.org
+    echo ERROR: Node.js is not installed!
+    echo.
+    echo Please install Node.js LTS first:
+    echo https://nodejs.org
+    echo.
+    echo After installing Node.js, run this script again.
+    echo.
     pause
     exit /b 1
 )
+echo Node.js found!
 
 echo Creating project directory...
 if not exist "C:\QB-Analytics" mkdir "C:\QB-Analytics"
