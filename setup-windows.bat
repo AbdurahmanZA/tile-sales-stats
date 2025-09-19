@@ -11,6 +11,38 @@ if %errorLevel% neq 0 (
     exit /b 1
 )
 
+echo Checking for Git installation...
+git --version >nul 2>&1
+if %errorLevel% neq 0 (
+    echo Git is not installed. Please install Git for Windows first.
+    echo Download from: https://git-scm.com/download/win
+    pause
+    exit /b 1
+)
+
+echo Checking for Node.js installation...
+node --version >nul 2>&1
+if %errorLevel% neq 0 (
+    echo Node.js is not installed. Please install Node.js LTS first.
+    echo Download from: https://nodejs.org
+    pause
+    exit /b 1
+)
+
+echo Creating project directory...
+if not exist "C:\QB-Analytics" mkdir "C:\QB-Analytics"
+cd /d "C:\QB-Analytics"
+
+echo Cloning repository from GitHub...
+if exist ".git" (
+    echo Repository already exists, pulling latest changes...
+    git pull origin main
+) else (
+    echo Please enter your GitHub repository URL:
+    set /p REPO_URL="Repository URL: "
+    git clone %REPO_URL% .
+)
+
 echo Installing Node.js dependencies...
 npm install
 
