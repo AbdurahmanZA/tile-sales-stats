@@ -42,37 +42,68 @@ if %errorLevel% neq 0 (
 echo Node.js found!
 
 echo Creating project directory...
-if not exist "C:\QB-Analytics" mkdir "C:\QB-Analytics"
-cd /d "C:\QB-Analytics"
+if not exist "C:\tiles" mkdir "C:\tiles"
+cd /d "C:\tiles"
 
 echo Cloning repository from GitHub...
 if exist ".git" (
     echo Repository already exists, pulling latest changes...
     git pull origin main
+    if %errorLevel% neq 0 (
+        echo ERROR: Failed to pull from repository!
+        pause
+        exit /b 1
+    )
 ) else (
     echo Please enter your GitHub repository URL:
     set /p REPO_URL="Repository URL: "
     git clone %REPO_URL% .
+    if %errorLevel% neq 0 (
+        echo ERROR: Failed to clone repository!
+        pause
+        exit /b 1
+    )
 )
 
-echo Installing Node.js dependencies...
-npm install
+echo.
+echo Installing Node.js dependencies... This may take a few minutes.
+echo Please wait...
+npm install --verbose
+if %errorLevel% neq 0 (
+    echo ERROR: Failed to install dependencies!
+    echo.
+    echo Try running: npm cache clean --force
+    echo Then run this script again.
+    pause
+    exit /b 1
+)
 
+echo.
 echo Building production application...
 npm run build
+if %errorLevel% neq 0 (
+    echo ERROR: Failed to build application!
+    pause
+    exit /b 1
+)
 
 echo Creating IIS application directory...
-if not exist "C:\inetpub\wwwroot\qb-analytics" mkdir "C:\inetpub\wwwroot\qb-analytics"
+if not exist "C:\inetpub\wwwroot\tiles" mkdir "C:\inetpub\wwwroot\tiles"
 
 echo Copying build files to IIS...
-xcopy "dist\*" "C:\inetpub\wwwroot\qb-analytics\" /E /I /Y
+xcopy "dist\*" "C:\inetpub\wwwroot\tiles\" /E /I /Y
+if %errorLevel% neq 0 (
+    echo ERROR: Failed to copy files to IIS!
+    pause
+    exit /b 1
+)
 
 echo Setting up Windows Firewall rules...
-netsh advfirewall firewall add rule name="QB Analytics HTTP" dir=in action=allow protocol=TCP localport=80
-netsh advfirewall firewall add rule name="QB Analytics HTTPS" dir=in action=allow protocol=TCP localport=443
+netsh advfirewall firewall add rule name="Tiles Analytics HTTP" dir=in action=allow protocol=TCP localport=80
+netsh advfirewall firewall add rule name="Tiles Analytics HTTPS" dir=in action=allow protocol=TCP localport=443
 
 echo Creating backup directory...
-if not exist "C:\Backups\QB-Analytics" mkdir "C:\Backups\QB-Analytics"
+if not exist "C:\Backups\Tiles" mkdir "C:\Backups\Tiles"
 
 echo Setup complete!
 echo.
