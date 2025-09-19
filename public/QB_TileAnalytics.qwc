@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QBWCXML>
    <AppName>QB Tile Analytics</AppName>
-   <AppID>{E4C1A2B3-9876-4321-A123-456789ABCDEF}</AppID>
-   <AppURL>http://localhost:3000/api/quickbooks-connector</AppURL>
+   <AppID>{E4C1A2B3-9876-4321-A123-456789ABCDEF}</AppId>
+   <AppURL>https://your-domain.com/api/quickbooks-connector</AppURL>
    <AppDescription>QuickBooks Web Connector for South African Tile Business Analytics</AppDescription>
-   <AppSupport>http://localhost:3000/support</AppSupport>
+   <AppSupport>https://your-domain.com/support</AppSupport>
    <UserName>qb_tile_user</UserName>
    <OwnerID>{12345678-1234-1234-1234-123456789ABC}</OwnerID>
    <FileID>{QBFILE-TILE-2024-ANALYTICS}</FileID>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QBWCXML>
+   <AppName>QB Tile Analytics (Sandbox)</AppName>
+   <AppID>{E4C1A2B3-9876-4321-A123-456655440SBX}</AppId>
+   <AppURL>https://3001-i2g27v96x2mfgmgvt86w5-6532622b.e2b.dev/api/quickbooks-connector</AppURL>
+   <AppDescription>QuickBooks Web Connector for South African Tile Business Analytics - Sandbox</AppDescription>
+   <AppSupport>https://3001-i2g27v96x2mfgmgvt86w5-6532622b.e2b.dev/support</AppSupport>
+   <UserName>qb_tile_sandbox</UserName>
+   <OwnerID>{12345678-1234-1234-1234-123456789SBX}</OwnerID>
+   <FileID>{QBFILE-TILE-SANDBOX-2024}</FileID>
+   <QBType>QBFS</QBType>
+   <Scheduler>
+      <RunEveryNMinutes>10</RunEveryNMinutes>
+   </Scheduler>
+   <IsReadOnly>true</IsReadOnly>
+   <AuthFlags>0x0</AuthFlags>
+   <Notify>true</Notify>
+   <AppUniqueName>QB_TileAnalytics_SA_Sandbox_v1.0</AppUniqueName>
+   <AppDisplayName>QuickBooks Tile Analytics Dashboard (Sandbox)</AppDisplayName>
+</QBWCXML>

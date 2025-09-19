@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QBWCXML>
+   <AppName>QB Tile Analytics (Dev)</AppName>
+   <AppID>{E4C1A2B3-9876-4321-A123-456655440DEV}</AppId>
+   <AppURL>http://localhost:3001/api/quickbooks-connector</AppURL>
+   <AppDescription>QuickBooks Web Connector for South African Tile Business Analytics - Development</AppDescription>
+   <AppSupport>http://localhost:3001/support</AppSupport>
+   <UserName>qb_tile_dev</UserName>
+   <OwnerID>{12345678-1234-1234-1234-123456789DEV}</OwnerID>
+   <FileID>{QBFILE-TILE-DEV-2024}</FileID>
+   <QBType>QBFS</QBType>
+   <Scheduler>
+      <RunEveryNMinutes>5</RunEveryNMinutes>
+   </Scheduler>
+   <IsReadOnly>true</IsReadOnly>
+   <AuthFlags>0x0</AuthFlags>
+   <Notify>true</Notify>
+   <AppUniqueName>QB_TileAnalytics_SA_Dev_v1.0</AppUniqueName>
+   <AppDisplayName>QuickBooks Tile Analytics Dashboard (Development)</AppDisplayName>
+</QBWCXML>
